@@ -1,43 +1,54 @@
-# .github/workflows/azure-static-web-apps.yml
-
-name: Build and Deploy Angular App to Azure App Service
+name: Build and Deploy Angular to Azure
 
 on:
   push:
     branches:
-      - main
+      - main  # or the branch you want to trigger the workflow
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16.x'
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'  # Ensure this matches your project's Node version
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install dependencies
+      run: npm install
 
-      - name: Build Angular app
-        run: npm run build --prod
-      
-      - name: Azure Login
-        uses: azure/login@v1
-          with:
-            creds: ${{ secrets.AZURE_CRED }}
-            tenant: ${{ secrets.AZURE_TENANT_ID }}
+    - name: Run build
+      run: npm run build --prod
 
+    - name: Upload production-ready build files
+      uses: actions/upload-artifact@v2
+      with:
+        name: angular-app
+        path: dist/revhire  # Update this with your actual build output folder
 
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: production
 
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'revhire-frontend-app'
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: './dist'
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v2
+      with:
+        name: angular-app
+
+    - name: 'Login via Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure Web App Deploy
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'revhire-frontend-app'  # Update this with your Azure App Service name
+        slot-name: 'production'
+        package: ./dist/revhire  # Ensure this matches your actual build output folder
