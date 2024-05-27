@@ -22,13 +22,16 @@ jobs:
       run: npm install
 
     - name: Run build
-      run: npm run build --prod
+      run: npm run build -- --prod  # Note the additional `--` before `--prod`
+
+    - name: List build directory
+      run: ls -la ./dist/revhire  # List the contents of the build directory for debugging
 
     - name: Upload production-ready build files
       uses: actions/upload-artifact@v2
       with:
         name: angular-app
-        path: dist/revhire  # Update this with your actual build output folder
+        path: dist/revhire  # Ensure this matches your actual build output folder
 
   deploy:
     needs: build
@@ -51,4 +54,4 @@ jobs:
       with:
         app-name: 'revhire-frontend-app'  # Update this with your Azure App Service name
         slot-name: 'production'
-        package: dist/revhire  # Ensure this matches your actual build output folder
+        package: ./dist/revhire  # Ensure this matches your actual build output folder
