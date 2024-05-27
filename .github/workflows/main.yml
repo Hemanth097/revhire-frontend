@@ -29,8 +29,11 @@ jobs:
 
     - name: Zip build directory
       run: |
-        cd dist
-        zip -r ../build.zip revhire
+        cd dist/revhire
+        zip -r ../../build.zip .
+
+    - name: List zip file
+      run: ls -la ./build.zip  # List the contents of the zip file for debugging
 
     - name: Upload production-ready build files
       uses: actions/upload-artifact@v2
@@ -48,7 +51,9 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: angular-app
-        path: build.zip
+
+    - name: List downloaded files
+      run: ls -la
 
     - name: 'Login via Azure CLI'
       uses: azure/login@v1
