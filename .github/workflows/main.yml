@@ -28,9 +28,9 @@ jobs:
       
       - name: Azure Login
         uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CLIENT_ID }}:${{ secrets.AZURE_CLIENT_SECRET }}
-          tenant: ${{ secrets.AZURE_TENANT_ID }}
+          with:
+            creds: ${{ secrets.AZURE_CRED }}
+            tenant: ${{ secrets.AZURE_TENANT_ID }}
 
 
 
