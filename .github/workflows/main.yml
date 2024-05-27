@@ -28,7 +28,9 @@ jobs:
       run: ls -la ./dist/revhire  # List the contents of the build directory for debugging
 
     - name: Zip build directory
-      run: zip -r build.zip ./dist/revhire
+      run: |
+        cd dist
+        zip -r ../build.zip revhire
 
     - name: Upload production-ready build files
       uses: actions/upload-artifact@v2
