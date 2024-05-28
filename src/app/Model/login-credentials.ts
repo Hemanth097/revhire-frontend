@@ -5,8 +5,8 @@ export class LoginCredentials {
         public password: String,
 
     ){
-        this.email=email|| "hemanth@gmail.com";
-        this.password=password || "Hemanth@";
+        this.email="hemanth@gmail.com";
+        this.password="Hemanth@";
 
     }
 }
