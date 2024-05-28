@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
-import { GeneralService } from '../Service/general.service';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -9,40 +8,44 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class LoginComponent {
   attemptedLogin = false;
-  message :any;
+  message: any;
 
-
-  formData:any = {
-    email:"",
+  formData: any = {
+    email: "",
     password: ""
   }
 
-  constructor( private userService : GeneralService, private router:Router){}
-  ngOnInit(): void {
-  }
-  
+  constructor(private router: Router) {}
+
+  ngOnInit(): void {}
 
   onSubmit() {
-    this.userService.loginUser(this.formData).subscribe(
+    const hardcodedEmail = 'user@example.com';
+    const hardcodedPassword = 'password123';
 
-      (data)=>{
-        
-         console.log(data);
-         this.attemptedLogin=true;
-         this.message = "Login Successfull";
-         this.router.navigateByUrl("/dashboard"), sessionStorage.setItem('userId', data.id),sessionStorage.setItem('userName', data.firstName), sessionStorage.setItem('role', data.role);
-    },
-      err => {
-  
-        this.message="Email or Password is wrong";
-        console.log(err.message);
-        this.attemptedLogin=true;
-        
-      }
-      
-      );
+    if (this.formData.email === hardcodedEmail && this.formData.password === hardcodedPassword) {
+      console.log('Login successful');
+      this.attemptedLogin = true;
+      this.message = "Login Successful";
+
+      // Mock user data
+      const userData = {
+        id: '1',
+        firstName: 'John',
+        role: 'Admin'
+      };
+
+      sessionStorage.setItem('userId', userData.id);
+      sessionStorage.setItem('userName', userData.firstName);
+      sessionStorage.setItem('role', userData.role);
+
+      this.router.navigateByUrl("/dashboard");
+    } else {
+      this.message = "Email or Password is wrong";
+      console.log('Login failed');
+      this.attemptedLogin = true;
+    }
+
     console.log(this.formData);
-
   }
-
 }
